@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taxi_uber/auth/client_register_sceen.dart';
 import 'utils/welcome.dart';
 import 'homePage.dart';
 void main() async {
@@ -9,6 +10,15 @@ void main() async {
   Widget homeScreen = HomePage();
    if(seen ==null || !seen){
      homeScreen=WelcomePage();
+       }else{
+
+   String UserId=sharedPreferences.getString('user_id');
+         
+         if(UserId==null|| UserId==''){
+          
+          homeScreen=ClientRegisterScreen();
+             }
+
        }
    runApp(Wssalni(homeScreen));
      }

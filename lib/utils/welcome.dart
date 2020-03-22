@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:taxi_uber/homePage.dart';
+import 'package:taxi_uber/auth/client_register_sceen.dart'; 
 import 'package:taxi_uber/model/welcomeModel.dart';
 import 'package:taxi_uber/themes/mainTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'screen_size.dart';
 class WelcomePage extends StatefulWidget {
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  WidgetSize fontWidgetSize ; 
+  SizeConfig sizeConfig;
   String NextText = "Next";
   bool imInLastPage = false;
   int currentPosition = 1;
@@ -36,13 +38,15 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _pageController = PageController(initialPage: 1, viewportFraction: 0.45);
+    _pageController = PageController(initialPage: 1, viewportFraction: 0.75);
   }
-
   @override
   Widget build(BuildContext context) {
-    double offSet = MediaQuery.of(context).size.height * 0.120;
-    double raduis = MediaQuery.of(context).size.width * 0.09;
+    sizeConfig=SizeConfig(context);
+    fontWidgetSize=WidgetSize(sizeConfig);
+
+    double offSet = sizeConfig.screenHeight * 0.135;
+    double raduis = sizeConfig.screenWidth * 0.09;
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -67,14 +71,14 @@ class _WelcomePageState extends State<WelcomePage> {
         decoration: BoxDecoration(
             color: mainTheme.primaryColorLight,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(raduis),
+                topRight: Radius.circular(raduis),  
                 topLeft: Radius.circular(raduis))),
-        height: MediaQuery.of(context).size.height * 0.115,
+        height: sizeConfig.screenHeight *0.115,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FlatButton(
-              child: Text("Skip"),
+              child: Text("Skip",style: TextStyle(fontSize: fontWidgetSize.bodyFontSize,color:Color(0xFF636363)),),
               onPressed: () async {
                 SharedPreferences pref = await SharedPreferences.getInstance();
                 pref.setBool("seen", true);
@@ -118,7 +122,7 @@ class _WelcomePageState extends State<WelcomePage> {
       alignment: Alignment.topCenter,
       child: Padding(
           padding:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.11),
+              EdgeInsets.only(top:sizeConfig.screenHeight * 0.11),
           child: PageView.builder(
               itemCount: this.welecomes.length,
               controller: _pageController,
@@ -144,51 +148,17 @@ class _WelcomePageState extends State<WelcomePage> {
                   child: Column(
                     children: <Widget>[
                       AnimatedBuilder(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: new BorderRadius.circular(20.0),
-                            child: Image(
-                              fit: BoxFit.contain,
-                              image: AssetImage(
-                                welecomes[position].image,
-                              ),
-                            ),
-                          ),
+                        child: Container(  
+                          decoration: BoxDecoration(   borderRadius: BorderRadius.circular(15),  ),
+                          child:_imageNavigator(position, 1),
                         ),
                         builder: (BuildContext context, Widget child) {
                           if (_pageController.position.haveDimensions) {
                             transitionFactor = _pageController.page - position;
-                            transitionFactor =
-                                (1 - transitionFactor.abs() * 0.1)
-                                    .clamp(0.0, 1.0);
-                            return ClipRRect(
-                              borderRadius: new BorderRadius.circular(20.0),
-                              child: Image(
-                            //    width: 400,
-                                height:
-                                    (MediaQuery.of(context).size.height * 0.5) *
-                                        transitionFactor,
-                                fit: BoxFit.contain,
-                                image: AssetImage(
-                                  welecomes[position].image,
-                                ),
-                              ),
-                            );
+                            transitionFactor = (1 - transitionFactor.abs() * 0.1)  .clamp(0.0, 1.0);
+                            return _imageNavigator(position, transitionFactor);
                           } else {
-                            return ClipRRect(
-                              borderRadius: new BorderRadius.circular(20.0),
-                              child: Image(
-                                height:  MediaQuery.of(context).size.height * 0.5,
-                                fit: BoxFit.contain,
-                                image: AssetImage(
-                                  welecomes[position].image,
-                                ),
-                              ),
-                            );
+                            return _imageNavigator(position, 1);
                           }
                         },
                         animation: _pageController,
@@ -197,23 +167,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         height: 32,
                       ),
                       AnimatedBuilder(
-                        child: Column(
-                          children: <Widget>[
-                            Text(welecomes[position].title,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .title
-                                    .copyWith(color: Color(0xFF636363))),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(welecomes[position].body,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subhead
-                                    .copyWith(color: Color(0xFF636363))),
-                          ],
-                        ),
+                        child:_columnText(position),
                         animation: _pageController,
                         builder: (BuildContext context, Widget child) {
                           if (_pageController.position.haveDimensions) {
@@ -264,31 +218,47 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget textAnimation(position, transactionFactor) {
     return AnimatedOpacity(
-      child: Column(children: <Widget>[
-        Text(welecomes[position].title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .title
-                .copyWith(color: Color(0xFF636363))),
-        SizedBox(
-          height: 5,
-        ),
-        Text(welecomes[position].body,
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .subhead
-                .copyWith(color: Color(0xFF636363))),
-      ]),
+      child: _columnText(position),
       duration: Duration(milliseconds: 300),
       opacity: transactionFactor,
     );
   }
 
+  Column _columnText(position) {
+    return Column(children: <Widget>[
+      Text(welecomes[position].title,
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .title
+              .copyWith(color: Color(0xFF636363),fontSize: fontWidgetSize.titleFontSize)),
+      SizedBox(
+        height: 5,
+      ),
+      Text(welecomes[position].body,
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .subhead
+              .copyWith(color: Color(0xFF636363),fontSize:fontWidgetSize.bodyFontSize),)
+    ]
+    
+    );
+  }
+
   void _goToHomePage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return HomePage();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return ClientRegisterScreen();
     }));
+  }
+
+
+  Widget _imageNavigator(position,trans){
+    return ClipRRect(
+     borderRadius: new BorderRadius.circular(20.0),
+               child: Image(
+                   height: (sizeConfig.screenHeight * 0.5) *  trans,
+                       fit: BoxFit.contain,
+                    image: AssetImage(   welecomes[position].image,),  ),  );
   }
 }
