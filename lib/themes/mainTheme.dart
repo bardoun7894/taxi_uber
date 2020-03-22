@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
  
 ThemeData mainTheme =ThemeData(
-	primaryColorDark: Color(0xffEFAD11),
+	primaryColorDark: Color(0xffEFBC06), 
 	primaryColorLight: Color(0xffF4F6E2),
   accentColor:  Color(0xFF636363),
   fontFamily: 'SFPro',

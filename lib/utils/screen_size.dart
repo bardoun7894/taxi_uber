@@ -9,7 +9,7 @@ enum  ScreenType {
 class SizeConfig{
 ScreenType screenType;
 BuildContext context;
-double screenWidth;
+  double screenWidth;
 double screenHeight;
 SizeConfig(BuildContext context){
 

@@ -1,16 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:taxi_uber/auth/client_register_sceen.dart'; 
+import 'package:taxi_uber/auth/client_register_sceen.dart';
 import 'package:taxi_uber/model/welcomeModel.dart';
 import 'package:taxi_uber/themes/mainTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screen_size.dart';
+
 class WelcomePage extends StatefulWidget {
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  WidgetSize fontWidgetSize ; 
+  WidgetSize fontWidgetSize;
   SizeConfig sizeConfig;
   String NextText = "Next";
   bool imInLastPage = false;
@@ -26,6 +29,7 @@ class _WelcomePageState extends State<WelcomePage> {
         "Praesent tellus mauris, tincidunt nec ipsum id, faucibus pellentesque leo. Nunc congue ac tellus quis porttitor. "),
   ];
   PageController _pageController;
+
   double transitionFactor = 1;
   @override
   void dispose() {
@@ -38,14 +42,19 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _pageController = PageController(initialPage: 1, viewportFraction: 0.75);
+
+    _pageController = PageController(initialPage: 0, viewportFraction: 0.7);
+    Timer(Duration(microseconds: 1), () {
+        _pageController.nextPage(
+            duration: Duration(microseconds:1), curve: Curves.fastOutSlowIn);
+    });
   }
+
   @override
   Widget build(BuildContext context) {
-    sizeConfig=SizeConfig(context);
-    fontWidgetSize=WidgetSize(sizeConfig);
-
-    double offSet = sizeConfig.screenHeight * 0.135;
+    sizeConfig = SizeConfig(context);
+    fontWidgetSize = WidgetSize(sizeConfig);
+    double offSet = sizeConfig.screenHeight * 0.19;
     double raduis = sizeConfig.screenWidth * 0.09;
     return Scaffold(
       body: Stack(
@@ -71,14 +80,19 @@ class _WelcomePageState extends State<WelcomePage> {
         decoration: BoxDecoration(
             color: mainTheme.primaryColorLight,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(raduis),  
+                topRight: Radius.circular(raduis),
                 topLeft: Radius.circular(raduis))),
-        height: sizeConfig.screenHeight *0.115,
+        height: sizeConfig.screenHeight * 0.115,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FlatButton(
-              child: Text("Skip",style: TextStyle(fontSize: fontWidgetSize.bodyFontSize,color:Color(0xFF636363)),),
+              child: Text(
+                "Skip",
+                style: TextStyle(
+                    fontSize: fontWidgetSize.bodyFontSize,
+                    color: Color(0xFF636363)),
+              ),
               onPressed: () async {
                 SharedPreferences pref = await SharedPreferences.getInstance();
                 pref.setBool("seen", true);
@@ -121,13 +135,13 @@ class _WelcomePageState extends State<WelcomePage> {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-          padding:
-              EdgeInsets.only(top:sizeConfig.screenHeight * 0.11),
+          padding: EdgeInsets.only(top: sizeConfig.screenHeight * 0.11),
           child: PageView.builder(
               itemCount: this.welecomes.length,
               controller: _pageController,
               onPageChanged: (position) {
                 setState(() {
+                  //       print(position);
                   currentPosition = position;
                 });
                 if (position == welecomes.length - 1) {
@@ -144,18 +158,25 @@ class _WelcomePageState extends State<WelcomePage> {
               },
               itemBuilder: (context, position) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 8, right: 8, left: 8),
+                  padding: EdgeInsets.only(
+                      bottom: sizeConfig.screenHeight * 0.012,
+                      right: sizeConfig.screenWidth * 0.02,
+                      left: sizeConfig.screenWidth * 0.02),
                   child: Column(
                     children: <Widget>[
                       AnimatedBuilder(
-                        child: Container(  
-                          decoration: BoxDecoration(   borderRadius: BorderRadius.circular(15),  ),
-                          child:_imageNavigator(position, 1),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: _imageNavigator(position, 1),
                         ),
                         builder: (BuildContext context, Widget child) {
                           if (_pageController.position.haveDimensions) {
                             transitionFactor = _pageController.page - position;
-                            transitionFactor = (1 - transitionFactor.abs() * 0.1)  .clamp(0.0, 1.0);
+                            transitionFactor =
+                                (1 - transitionFactor.abs() * 0.1)
+                                    .clamp(0.0, 1.0);
                             return _imageNavigator(position, transitionFactor);
                           } else {
                             return _imageNavigator(position, 1);
@@ -167,7 +188,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         height: 32,
                       ),
                       AnimatedBuilder(
-                        child:_columnText(position),
+                        child: _columnText(position),
                         animation: _pageController,
                         builder: (BuildContext context, Widget child) {
                           if (_pageController.position.haveDimensions) {
@@ -228,22 +249,19 @@ class _WelcomePageState extends State<WelcomePage> {
     return Column(children: <Widget>[
       Text(welecomes[position].title,
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Color(0xFF636363),fontSize: fontWidgetSize.titleFontSize)),
+          style: Theme.of(context).textTheme.title.copyWith(
+              color: Color(0xFF636363),
+              fontSize: fontWidgetSize.titleFontSize)),
       SizedBox(
         height: 5,
       ),
-      Text(welecomes[position].body,
-          textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .subhead
-              .copyWith(color: Color(0xFF636363),fontSize:fontWidgetSize.bodyFontSize),)
-    ]
-    
-    );
+      Text(
+        welecomes[position].body,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.subhead.copyWith(
+            color: Color(0xFF636363), fontSize: fontWidgetSize.bodyFontSize),
+      )
+    ]);
   }
 
   void _goToHomePage(BuildContext context) {
@@ -252,13 +270,17 @@ class _WelcomePageState extends State<WelcomePage> {
     }));
   }
 
-
-  Widget _imageNavigator(position,trans){
+  Widget _imageNavigator(position, trans) {
     return ClipRRect(
-     borderRadius: new BorderRadius.circular(20.0),
-               child: Image(
-                   height: (sizeConfig.screenHeight * 0.5) *  trans,
-                       fit: BoxFit.contain,
-                    image: AssetImage(   welecomes[position].image,),  ),  );
+      borderRadius: new BorderRadius.circular(20.0),
+      child: Image(
+      
+        height: (sizeConfig.screenHeight * 0.55) * trans,
+        fit: BoxFit.cover,
+        image: AssetImage(
+          welecomes[position].image,
+        ),
+      ),
+    );
   }
 }

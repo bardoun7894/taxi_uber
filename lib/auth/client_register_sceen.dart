@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taxi_uber/auth/login_screen.dart';
 import 'package:taxi_uber/themes/mainTheme.dart';
+import 'package:taxi_uber/utils/screen_size.dart';
+import 'package:taxi_uber/utils/shared_widgets.dart';
 
 class ClientRegisterScreen extends StatefulWidget {
   @override
@@ -16,7 +19,8 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
   TextEditingController _passwordController = TextEditingController();
 
   TextEditingController _passwordConfirmController = TextEditingController();
-
+  WidgetSize fontWidgetSize;
+  SizeConfig sizeConfig;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -27,118 +31,103 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
     _passwordController.dispose();
     _passwordConfirmController.dispose();
   }
-@override
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    SharedPreferences.getInstance().then((sharedPref){
-   sharedPref.setBool('seen', true);
+    SharedPreferences.getInstance().then((sharedPref) {
+      sharedPref.setBool('seen', true);
     });
   }
+
   @override
   Widget build(BuildContext context) {
+    sizeConfig = SizeConfig(context);
+    fontWidgetSize = WidgetSize(sizeConfig);
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-            child: Text(
-          "Sign Up",
-          style: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Color(0xFF636363)),
-        )),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: appBar(context, 'Sign Up'),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16,right: 16,bottom: 32),
+        padding: EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.05),
         child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                SizedBox(height: 75,),
+                SizedBox(
+                  height: 75,
+                ),
                 TextFormField(
+                  style: TextStyle(
+                      fontFamily: 'SFPro',
+                      fontSize: fontWidgetSize.bodyFontSize),
                   decoration: InputDecoration(
                     hintText: "email",
                   ),
                 ),
                 TextFormField(
+                  style: TextStyle(
+                      fontFamily: 'SFPro',
+                      fontSize: fontWidgetSize.bodyFontSize),
                   decoration: InputDecoration(
                     hintText: "password",
                   ),
                 ),
                 TextFormField(
+                  style: TextStyle(
+                      fontFamily: 'SFPro',
+                      fontSize: fontWidgetSize.bodyFontSize),
                   decoration: InputDecoration(
                     hintText: "confirm password",
                   ),
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 10,left: 10),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height*.06,
-               
-                    width: double.infinity,
-                     child: FlatButton(onPressed: ( ){   },
-                   shape: RoundedRectangleBorder(
-                      
-                    borderRadius: BorderRadius.all(Radius.circular(16))),              
-                    color: mainTheme.primaryColorDark,
-                    child: Text('Sign Up',style:TextStyle(color: Colors.white)  )),
+                registerButton(context, 'Sign Up',signUpMethod),
+                Center(
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        'Already Member?',
+                        style: TextStyle(
+                            color: Color(0xFF8A8A8A),
+                            fontSize: fontWidgetSize.bodyFontSize - 2,
+                            fontFamily: 'SFPro'),
                       ),
-                      ),
-                
-                  Center(
-                    child: Row(children: <Widget>[
-                     Text('Already Member?'),
-                     Padding(padding: EdgeInsets.only(right: 20)),
-                     FlatButton(child: Text('SignIn',style: TextStyle(color: mainTheme.primaryColorDark),), onPressed: () {},)
-
-                    ],),
+                      Padding(padding: EdgeInsets.only(right: 5)),
+                      FlatButton(
+                        child: Text(
+                          'SignIn',
+                          style: TextStyle(
+                              color: mainTheme.primaryColorDark,
+                              fontSize: fontWidgetSize.bodyFontSize,
+                              fontFamily: 'SFPro'),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) {
+                            return LoginScreen();
+                          }));
+                        },
+                      )
+                    ],
                   ),
-               
-                _or(context),
-                 _driverButton(context)
+                ),
+                or(context),
+                registerButton(context,'Create Driver Account',createDriverAccount)
               ],
             )),
       ),
     );
   }
+    void signUpMethod(){ 
+  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return LoginScreen();
+    }));
+  }
+      void createDriverAccount(){ 
+  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return LoginScreen();
+    }));
+  }
 
-  Widget _or(BuildContext context) {
-    return Row(
-      children: <Widget>[
-       Flexible( child:  hLine(context)),
-        
-         Padding(
-           padding: const EdgeInsets.all(8.0),
-           child: Text('OR',style: TextStyle(color:Colors.grey,fontWeight: FontWeight.bold),),
-         ),
-    
-       Flexible( child:  hLine(context)),
-                ],
-              );
-            }
-          
-  Widget _driverButton(BuildContext context) {
-   return  Padding(
-                  padding: const EdgeInsets.only(right: 10,left: 10),
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height*.06,
-                   child: FlatButton(onPressed: ( ){   },
-               shape:  RoundedRectangleBorder(
-                      
-                    borderRadius: BorderRadius.all(Radius.circular(16))),              
-                    color: mainTheme.primaryColorDark,
-                    child: Text('Create Driver Account',style:TextStyle(color: Colors.white)  )),
-                  ),
-                );
-            
-            }
-          
- Widget hLine(BuildContext context) {
-              return Container(height: 1,color: Colors.grey.shade400,);
-            }
+ 
 }
