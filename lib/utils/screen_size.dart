@@ -11,6 +11,7 @@ ScreenType screenType;
 BuildContext context;
   double screenWidth;
 double screenHeight;
+
 SizeConfig(BuildContext context){
 
   this.screenHeight=MediaQuery.of(context).size.height;

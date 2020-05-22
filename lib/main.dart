@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taxi_uber/auth/client_register_sceen.dart';
+import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:taxi_uber/auth/login_screen.dart';
 import 'utils/welcome.dart';
 import 'homePage.dart';
 void main() async {
@@ -12,11 +12,12 @@ void main() async {
      homeScreen=WelcomePage();
        }else{
 
-   String UserId=sharedPreferences.getString('user_id');
+   String userId=sharedPreferences.getString('user_id');
          
-         if(UserId==null|| UserId==''){
+         if(userId == null|| userId ==''){
           
-          homeScreen=ClientRegisterScreen();
+          homeScreen=LoginScreen();
+            
              }
 
        }

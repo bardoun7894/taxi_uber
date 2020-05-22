@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
    String email;
   String password;
-    WidgetSize fontWidgetSize ; 
+   WidgetSize fontWidgetSize ; 
   SizeConfig sizeConfig;
   final _formKey =GlobalKey<FormState>();
   TextEditingController _emailController = TextEditingController();
@@ -56,7 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   TextFormField(
-                       style: TextStyle(fontFamily:'SFPro',fontSize: fontWidgetSize.bodyFontSize ),
+            
+               style:TextStyle(fontFamily:'SFPro',fontSize: fontWidgetSize.bodyFontSize ),
                     decoration: InputDecoration(
                       hintText: "password",
                     ),

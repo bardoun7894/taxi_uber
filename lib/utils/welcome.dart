@@ -37,13 +37,13 @@ class _WelcomePageState extends State<WelcomePage> {
     super.dispose();
     _pageController.dispose();
   }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _pageController = PageController(initialPage: 0, viewportFraction: 0.7);
+    _pageController = PageController(
+      initialPage: 0, viewportFraction: 0.7);
     Timer(Duration(microseconds: 1), () {
         _pageController.nextPage(
             duration: Duration(microseconds:1), curve: Curves.fastOutSlowIn);
@@ -194,7 +194,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           if (_pageController.position.haveDimensions) {
                             transitionFactor = _pageController.page - position;
                             transitionFactor =
-                                (1 - transitionFactor.abs()).clamp(0.0, 1.0);
+                            (1 - transitionFactor.abs()).clamp(0.0, 1.0);
                             return textAnimation(position, transitionFactor);
                           } else {
                             return textAnimation(position, 1.0);
@@ -236,7 +236,6 @@ class _WelcomePageState extends State<WelcomePage> {
     // indicatorPage(Colors.yellow, 16.0),
     // indicatorPage(Colors.red, 0),
   }
-
   Widget textAnimation(position, transactionFactor) {
     return AnimatedOpacity(
       child: _columnText(position),

@@ -5,6 +5,8 @@ import 'package:taxi_uber/themes/mainTheme.dart';
 import 'package:taxi_uber/utils/screen_size.dart';
 import 'package:taxi_uber/utils/shared_widgets.dart';
 
+import 'driver_register_screen.dart';
+
 class ClientRegisterScreen extends StatefulWidget {
   @override
   _ClientRegisterScreenState createState() => _ClientRegisterScreenState();
@@ -51,7 +53,8 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
         padding: EdgeInsets.only(right: sizeConfig.screenWidth*0.03,left:sizeConfig.screenWidth*0.03,bottom:sizeConfig.screenHeight*0.05),
         child: Form(
             key: _formKey,
-            child: Column(
+            child: 
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 SizedBox(
@@ -123,9 +126,9 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
       return LoginScreen();
     }));
   }
-      void createDriverAccount(){ 
+  void createDriverAccount(){ 
   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-      return LoginScreen();
+      return DriverRegisterScreen();
     }));
   }
 

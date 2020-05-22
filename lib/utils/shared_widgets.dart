@@ -28,16 +28,16 @@ Widget divider(BuildContext context){
 }
 
  Widget registerButton(BuildContext context,title,onPressed) {
-    return   Container(
+    return  Container(
         width: double.infinity,
         height: sizeConfig.screenHeight*.065,
         child: FlatButton(
             onPressed:onPressed,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25))),
+            borderRadius: BorderRadius.all(Radius.circular(25))),
             color: mainTheme.primaryColorDark,
             child: Text(title,
-              style: TextStyle(
+            style: TextStyle(
                   fontFamily: 'SFPro',
                   fontWeight: FontWeight.bold,
                   fontSize: fontWidgetSize.bodyFontSize - 1,
